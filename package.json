@@ -1,0 +1,20 @@
+{
+  "name": "path-ninja",
+  "version": "0.0.0",
+  "author": "Thomas Galazka <tjgalazka@gmail.com>",
+  "description": "simple utility for project path negotiation",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tgalazka/path-ninja.git"
+  },
+  "dependencies": {
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.2.5"
+  },
+  "engines": {
+    "node": ">=0.12.*"
+  }
+}
