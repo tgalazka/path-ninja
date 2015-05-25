@@ -9,3 +9,10 @@ wrap:
 
 unwrap:
 	rm -rf npm-shrinkwrap.json
+
+rewrap: unwrap clean install wrap
+
+unit:
+	node node_modules/mocha/bin/mocha test/unit 
+
+test: unit
