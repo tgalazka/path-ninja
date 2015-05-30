@@ -61,7 +61,7 @@ var pathy = function(dir, opts) {
     .uniq()
     .value();
 
-  return results.length > 1 ? 
+  return (results.length > 1 || (opts && opts.recursive)) ? 
     results : 
     (_.first(results) || null);
 };

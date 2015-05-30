@@ -112,7 +112,7 @@ Paths.lib.modules('some.module.js')     //returns '/Users/people/project_dir/lib
 
 ## Path Options
 The following path options can be supplied to alter the results of the registrar function.
-  * *recursive*: Returns sorted list of all sub-directories and files in that path.
+  * *recursive*: Returns sorted list of all sub-directories and files in that path; always returns an array.
   * *isFile*: Returns sorted list of all files in that path.
 
 ```bash
