@@ -53,10 +53,6 @@ var include = function(dir, opts) {
   if(result)
     return result;
 
-  var parsed = path.parse(dir);
-  if(parsed.ext)
-    return result;
-
   _.each(EXTENSIONS, function(ext) {
     if(!ext.match(/^\./))
       ext = '.' + ext;
