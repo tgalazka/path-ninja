@@ -303,4 +303,87 @@ describe("When working with path-ninja", function() {
       });
     });
   });
+
+  describe("when using registered file extensions synchronously", function() {
+    var Paths = null;
+    beforeEach(function() {
+      if(require.cache[cachePath])
+        delete require.cache[cachePath]
+
+      ninja = require(cachePath);
+      ninja.registerBase(TEST_BASE_DIR);
+      ninja.register(['single_sample', 'deep_sample']);
+      Paths = ninja.paths();
+    });
+
+    it("should try the registered file extension if none given", function(done) {
+      var exts = 'txt';
+      var expectedExts = ['txt'];
+      var EXTS = ninja.registerFileExtensions(exts);
+      expect(EXTS).to.eql(expectedExts);
+
+      var expected = path.resolve(TEST_BASE_DIR + "/deep_sample/with/file.txt");
+      var result = Paths['deep_sample']['with']('file');
+      expect(result).to.equal(expected);
+      done();
+    });
+
+    it("should try the registered file extensions if none given", function(done) {
+      var exts = [null, ['something'], 'txt'];
+      var expectedExts = ['something', 'txt'];
+      var EXTS = ninja.registerFileExtensions(exts);
+      expect(EXTS).to.eql(expectedExts);
+
+      var expected = path.resolve(TEST_BASE_DIR + "/deep_sample/with/file.txt");
+      var result = Paths['deep_sample']['with']('file');
+      expect(result).to.equal(expected);
+      done();
+    });
+  });
+
+  describe("when using registered file extensions asynchronously", function() {
+    var Paths = null;
+    beforeEach(function() {
+      if(require.cache[cachePath])
+        delete require.cache[cachePath]
+
+      ninja = require(cachePath);
+      ninja.registerBase(TEST_BASE_DIR);
+      ninja.register(['single_sample', 'deep_sample']);
+      Paths = ninja.paths();
+    });
+
+    it("should try the registered file extension if none given", function(done) {
+      var exts = 'txt';
+      var expectedExts = ['txt'];
+      var expected = path.resolve(TEST_BASE_DIR + "/deep_sample/with/file.txt");
+      
+      ninja.registerFileExtensions(exts, function(err, EXTS) {
+        expect(err).to.be(null);
+        expect(EXTS).to.eql(expectedExts);
+
+        Paths['deep_sample']['with']('file', function(err, result) {
+          expect(err).to.be(null);
+          expect(result).to.equal(expected);
+          done();
+        });
+      });
+    });
+
+    it("should try the registered file extensions if none given", function(done) {
+      var exts = [null, ['something'], 'txt'];
+      var expectedExts = ['something', 'txt'];
+      var expected = path.resolve(TEST_BASE_DIR + "/deep_sample/with/file.txt");
+      ninja.registerFileExtensions(exts, function(err, EXTS) {
+        expect(err).to.be(null);
+        expect(EXTS).to.eql(expectedExts);
+
+        Paths['deep_sample']['with']('file', function(err, result) {
+          expect(err).to.be(null);
+          expect(result).to.equal(expected);
+          done();
+        });
+      });
+    });
+  });
 });

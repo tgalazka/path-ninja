@@ -12,6 +12,8 @@ var path = require('path');
 
 var BASE = '';
 var PATHS = {};
+var EXTENSIONS = [];
+
 var Module = module.exports = {};
 
 Module.registerBase = function(base, callback) {
@@ -23,18 +25,47 @@ Module.getRegisteredBase = function(callback) {
   return callback ? callback(null, BASE) : BASE;
 };
 
-var include = function(dir, opts) {
+Module.registerFileExtensions = function(exts, callback) {
+  EXTENSIONS = _.chain([EXTENSIONS, exts])
+    .flatten()
+    .compact()
+    .value();
+  return Module.getRegisteredFileExtensions(callback);
+};
+
+Module.getRegisteredFileExtensions = function(callback) {
+  return callback ? callback(null, EXTENSIONS) : EXTENSIONS;
+};
+
+var checkFile = function(dir, opts) {
   if(!fs.existsSync(dir))
     return null;
-
-  if(!opts)
-    return dir;
 
   var stat = fs.statSync(dir);
   if(opts && opts.isFile && !stat.isFile())
     return null;
-
+  
   return dir;
+};
+
+var include = function(dir, opts) {
+  var result = checkFile(dir, opts);
+  if(result)
+    return result;
+
+  var parsed = path.parse(dir);
+  if(parsed.ext)
+    return result;
+
+  _.each(EXTENSIONS, function(ext) {
+    if(!ext.match(/^\./))
+      ext = '.' + ext;
+
+    result = checkFile(dir + ext, opts);
+    if(result)
+      return result;
+  });
+  return result;
 };
 
 //Applies the opts (optionally recursively) to the given node.

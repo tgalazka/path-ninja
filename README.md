@@ -7,7 +7,7 @@ Path Ninja wraps up some common fuctions for negotiating and walking file direct
 ```
 
 # Usage
-## pathNinja.registerBase('/base/path/to/files', *[callback]*)
+### pathNinja.registerBase('/base/path/to/files', *[callback]*)
 Typically this will be your projects' base directory, but you can make it any directory that you'll be loading (read 'require'-ing) files from.  Later when registering directories
 
 **Callback** signature:
@@ -28,7 +28,7 @@ pathNinja.registerBase('/Users/people/project_dir');
 If you're setting up Path Ninja from a base project file (like 'app.js' in an Express server) then you can use **__dirname** to set you're base dynamically whenever your project is deployed on differnent machines/operating systems.
 
 
-## pathNinja.register('dir1', ['dir2', ...], *[callback]*)
+### pathNinja.register('dir1', ['dir2', ...], *[callback]*)
 **register** will recursivly add all the given directories listed and all sub-directories to the internal registrar.
 
 **Callback** signature:
@@ -54,8 +54,32 @@ pathNinja.register(['lib', 'images'])
 }
 ```
 
+### pathNinja.registerFileExtensions(['ext', ...], *[callback]*)
+**registerFileExtensions** will add all the given file extensions to the internal file extension registrar.
 
-## pathNinja.paths(*[callback]*)
+When looking for a file or files while using the path registrar, path-ninja will try looking for a file with one of these extensions in the given location, and return the first one that is found.
+
+**Callback** signature:
+ * *err* Null, or Error object if error occured.
+ * *extensions* Object registrar of registerd paths; see **pathNinja.paths**.
+ 
+```bash
+//Project layout
+//  /Users/people/project_dir
+//    |_ lib
+//       |_ file.txt
+//       |_ file.js
+
+var pathNinja = require('path-ninja');
+pathNinja.registerBase('/Users/people/project_dir');
+pathNinja.register(['lib', 'images'])
+pathNinja.registerFileExtensions(['txt', 'js']);
+var Paths = pathNinja.paths();
+
+Paths.lib('file')               //returns '/Users/people/project_dir/lib/file.txt'
+```
+
+### pathNinja.paths(*[callback]*)
 Returns the registrar object used to navigate the paths as object defreferencing.
 
 **Callback** signature:
@@ -110,7 +134,7 @@ Paths.lib('anything/else')              //returns null since that directory does
 Paths.lib.modules('some.module.js')     //returns '/Users/people/project_dir/lib/modules/some.module.js'
 ```
 
-## Path Options
+### Path Options
 The following path options can be supplied to alter the results of the registrar function.
   * *recursive*: Returns sorted list of all sub-directories and files in that path; always returns an array.
   * *isFile*: Returns sorted list of all files in that path.
